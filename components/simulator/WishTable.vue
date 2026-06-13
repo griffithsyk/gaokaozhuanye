@@ -99,6 +99,8 @@ const emit = defineEmits<{
   export: []
 }>()
 
+const { getUniversityName, getGroupName } = useDataLookup()
+
 // 专业选择器状态
 const selectorShow = ref(false)
 const selectorIndex = ref(-1)
@@ -108,10 +110,8 @@ const selectorSelected = ref<string[]>([])
 
 const openMajorSelector = (index: number) => {
   selectorIndex.value = index
-  // 这里需要根据 wish 查找专业组信息
-  // 简化实现：从 wish 中提取信息
   const wish = props.wishes[index]
-  selectorGroupName.value = wish.groupCode
+  selectorGroupName.value = getGroupName(wish.universityCode, wish.groupCode)
   selectorSelected.value = [...wish.selectedMajors]
   selectorShow.value = true
 }
@@ -122,10 +122,6 @@ const handleMajorConfirm = (majors: string[]) => {
   }
   selectorShow.value = false
 }
-
-// 辅助函数（实际从数据中获取）
-const getUniversityName = (code: string) => code
-const getGroupName = (uniCode: string, groupCode: string) => groupCode
 
 const categoryBorder = (category: string) => {
   switch (category) {

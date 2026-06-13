@@ -77,39 +77,11 @@
 import { onMounted } from 'vue'
 
 const wishStore = useWishStore()
+const { getUniversityName, getGroupName, getMajorName } = useDataLookup()
 
-// 本地缓存的数据索引，用于查找名称
-const universityMap = ref<Record<string, string>>({})
-const groupMap = ref<Record<string, string>>({})
-const majorMap = ref<Record<string, string>>({})
-
-onMounted(async () => {
+onMounted(() => {
   wishStore.load()
-
-  // 加载院校和专业数据用于显示名称
-  try {
-    const [uniRes, majorRes] = await Promise.all([
-      $fetch<{ success: boolean; data?: any[] }>('/api/universities'),
-      $fetch<{ success: boolean; data?: any[] }>('/api/majors'),
-    ])
-
-    if (uniRes.success && uniRes.data) {
-      const map: Record<string, string> = {}
-      uniRes.data.forEach((u: any) => { map[u.code] = u.name })
-      universityMap.value = map
-    }
-
-    if (majorRes.success && majorRes.data) {
-      const map: Record<string, string> = {}
-      majorRes.data.forEach((m: any) => { map[m.code] = m.name })
-      majorMap.value = map
-    }
-  } catch {}
 })
-
-const getUniversityName = (code: string) => universityMap.value[code] || code
-const getGroupName = (uniCode: string, groupCode: string) => groupCode
-const getMajorName = (code: string) => majorMap.value[code] || code
 
 const handlePrint = () => {
   window.print()

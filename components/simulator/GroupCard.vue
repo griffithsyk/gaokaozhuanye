@@ -76,14 +76,11 @@ defineEmits<{
   add: [match: typeof props.match]
 }>()
 
+const { getMajorName } = useDataLookup()
+
 const latestRecord = computed(() => {
   return props.match.historicalData[0] || null
 })
-
-const getMajorName = (code: string): string => {
-  // 运行时通过 composable 获取
-  return code
-}
 
 const categoryBorder = computed(() => {
   switch (props.match.category) {
